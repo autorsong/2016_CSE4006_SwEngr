@@ -1,0 +1,62 @@
+{
+	"discounts": 0,
+	"extra_discounts": 10,
+	"global": {
+		"youth": {
+			"not_continuous": {
+				"5": {"price": 300, "valid_days": 30},
+				"7": {"price": 365, "valid_days": 30},
+				"10": {"price": 450, "valid_days": 60},
+				"15": {"price": 589, "valid_days": 60}
+			},
+			"continuous": {
+				"15": {"price": 383},
+				"22": {"price": 492},
+				"30": {"price": 604},
+				"60": {"price": 851},
+				"90": {"price": 1048}
+			}
+		},
+		"adult": {
+
+		}
+	},
+	"select4": {
+		"youth": {
+			"H": {
+				"5": 274,
+				"6": 299,
+				"8": 348,
+				"10": 397
+			},
+			"M": {
+
+			},
+			"L": {
+
+			}
+		},
+		"adult": {
+
+		}
+	},
+	"select3": {
+		"youth": {
+			"H": {
+				"5": 253,
+				"6": 278,
+				"8": 325,
+				"10": 365
+			},
+			"M": {
+
+			},
+			"L": {
+
+			}
+		},
+		"adult": {
+
+		}
+	}
+}

@@ -1,0 +1,8 @@
+{
+	"Spain": ["Spain", "France", "Italy"],
+	"France": ["France", "Spain", "Germany", "Switzerland", "Italy"],
+	"Germany": ["Germany", "Switerland", "France", "Austria"],
+	"Italy": ["Italy", "France", "Switzerland", "Austria", "Spain"],
+	"Switzerland": ["Switzerland", "Italy", "France", "Germany", "Austria"],
+	"Austria": ["Austria", "Switzerland", "Italy", "Germany"]
+}

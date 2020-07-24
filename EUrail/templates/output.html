@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<script language="JavaScript" type="text/javascript" src="/static/js/jquery.js"></script>
+<html lang="en">
+
+<head>
+
+    <!------------ File Inclue Part------------>
+    <script  type = "text/javascript" src="/static/js/checkTickets.js"></script>
+    <script  type = "text/javascript" src="/static/js/sendData.js"></script>
+    <script  type = "text/javascript" src="/static/js/final.js"></script>
+    <script  type = "text/javascript" src="/static/js/linksite.js"></script>
+    <script src="http://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!------------------------------------------------>
+
+    <!-- TiTle-->
+    <title>SoftEngineering Class - EUrail</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="./static/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="./static/css/landing-page.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="/static/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+
+    <![endif]-->
+
+
+    <script>
+        //Global Integers
+        var id,num = 0;
+        var sendCheck=0;
+
+
+        // src_nation(a), src_city(b), dest_nation(c), dest_city(d)
+        // year(e), month(f), day(g)
+        var a=0,b=0,c=0, d=0;
+        var e=0,f=0,g=0;
+
+        // list : (src_nation, src_city, dest_nation, dest_city, year, month, day)
+        var list = new Array();
+
+        //costList : cost by section
+        var costList = new Array();
+
+        //response data
+        var gugan_price, pass_name, pass_price;
+        var total_price, save_price;
+        var pass_train = new Array();
+        var gugan_train = new Array();
+
+
+        // Nation & City Inside Data
+        var nationCH = new Array();
+        nationCH[0] = 'Spain';
+        nationCH[1] = 'France';
+        nationCH[2] = 'Italy';
+        nationCH[3] = 'Germany';
+        nationCH[4] = 'Switzerland';
+        nationCH[5] = 'Austria';
+        var cityCH = [
+            ["Madrid", "Barcelona", "Valencia"],
+            ["Paris", "Lyon", "Marseille"],
+            ["Roma", "Firenze", "Venice"],
+            ["Berlin", "Munchen", "Frankfurt"],
+            ["Bern", "Interlaken", "Geneva"],
+            ["Wien", "Salzburg"]
+        ];
+
+        <!-- Part of addButton -->
+        function bind() {
+
+            <!-- Show City for Onchange Nation-->
+            $("#startN"+id).change(function() {
+                var index = $(this).val();
+                a=index;
+                var sr = "";
+                sr +="<option >Src City</option>";
+                for (var i = 0; i < 3; i++)
+                    sr += "<option>" + cityCH[index][i] + "</option>";
+
+                $("#startC"+id).html(sr);
+            });
+
+
+            <!-- Show City for Onchange Nation-->
+            $("#endN"+id).change(function() {
+                var index = $(this).val();
+                c=index;
+                var sr = "";
+                sr += "<option >Dest City</option>";
+                for (var i = 0; i < 3; i++)
+                    sr += "<option>" + cityCH[index][i] + "</option>";
+
+                $("#endC"+id).html(sr);
+            });
+
+
+            $("#year"+id).change(function() {
+                var index = $(this).val();
+                for(var i=0;i<10;i++)
+                {
+                    if(i==index)
+                        e=i+2016;
+                }
+            });
+
+            $("#month"+id).change(function() {
+                var index = $(this).val();
+                for(var i=0;i<15;i++)
+                {
+                    if(i==index)
+                        f=i+1;
+                }
+
+
+            });
+
+            $("#day"+id).change(function() {
+                var index = $(this).val();
+                for(var i=0;i<40;i++)
+                {
+                    if(i==index)
+                        g=i+1;
+                }
+
+
+            });
+
+
+
+        }
+
+        <!-- Default Execution Function-->
+        $(document).ready(function() {
+
+
+            <!-- Onclick for src_nation-->
+            $("#startN0").change(function() {
+                var index = $(this).val();
+                a=index;
+                var sr = "";
+                sr +="<option >Src City</option>"
+                for (var i = 0; i < 3; i++)
+                    sr += "<option>" + cityCH[index][i] + "</option>";
+
+                $("#startC0").html(sr);
+
+
+            });
+
+
+            <!-- Onclick for dest_nation-->
+            $("#endN0").change(function() {
+                var index = $(this).val();
+                c=index;
+                var sr = "";
+                sr += "<option>Dest City</option>";
+
+                for (var i = 0; i < 3; i++)
+                    sr += "<option>" + cityCH[index][i] + "</option>";
+
+                $("#endC0").html(sr);
+            });
+
+            <!-- Onclick for year-->
+            $("#year0").change(function() {
+                var index = $(this).val();
+                for(var i=0;i<10;i++)
+                {
+                    if(i==index)
+                        e=i+2016;
+                }
+
+            });
+
+            <!-- Onclick for month_nation-->
+            $("#month0").change(function() {
+                var index = $(this).val();
+                for(var i=0;i<15;i++)
+                {
+                    if(i==index)
+                        f=i+1;
+                }
+            });
+
+            <!-- Onclick for day_nation-->
+            $("#day0").change(function() {
+                var index = $(this).val();
+                for(var i=0;i<40;i++)
+                {
+                    if(i==index)
+                        g=i+1;
+                }
+            });
+
+
+
+
+        });
+
+        <!-- addButton-->
+        function addButton() {
+            if(sendCheck!=0)
+            {
+                sendCheck=0;
+                num--;
+
+            }
+
+            else if(sendCheck==0) {
+                var tmp = $("#startC" + num).val();
+                var tmp1 = $("#endC" + num).val();
+
+                for (var i = 0; i < 3; i++) {
+                    if (cityCH[a][i] == tmp) {
+                        b = i;
+
+                    }
+
+                }
+                for (var j = 0; j < 3; j++) {
+                    if (cityCH[c][j] == tmp1) {
+                        d = j;
+                    }
+                }
+
+                // onclick for ADD then push (src_nation, src_city, dest_nation, dest_city, year, month, day) to list
+                list.push(a);
+                list.push(b);
+                list.push(c);
+                list.push(d);
+                list.push(e);
+                list.push(f);
+                list.push(g);
+            }
+
+            //disabled for changing last selection
+            $("#startN"+num).attr("disabled",true);
+            $("#startC"+num).attr("disabled",true);
+            $("#endN"+num).attr("disabled",true);
+            $("#endC"+num).attr("disabled",true);
+            $("#year"+num).attr("disabled",true);
+            $("#month"+num).attr("disabled",true);
+            $("#day"+num).attr("disabled",true);
+
+
+
+
+            num++;
+
+            var htm = "<div> <select id='startN"+ num +"'style='font-size:14pt;background:#080808;color:white'><option >Src Nation</option><option value='0'>Spain</option> <option value='1'>France</option> <option value='2'>Italy</option> " +
+                    "<option value='3'>Germany</option><option value='4'>Switzerland</option><option value='5'>Austria</option> </select> <select id='startC" + num + "'style='font-size:14pt;background:#080808;color:white''> </select> " +
+                    "<span>&nbsp;&nbsp;</span>" +
+                    "<select id='endN"+num+"'style='font-size:14pt;background:#080808;color:white''><option >Dest Nation</option><option value='0'>Spain</option> <option value='1'>France</option> <option value='2'>Italy</option>" +
+                    "<option value='3'>Germany</option> <option value='4'>Switzerland</option> <option value='5'>Austria</option> </select> <select id='endC"+num+"'style='font-size:14pt;background:#080808;color:white''> </select>"+
+                    "<span>&nbsp;&nbsp;</span>"+
+                    "<select id='year"+num+"'style='font-size:14pt;background:#080808; color:white'> <option >Year</option><option value='0'>2016</option> <option value='1'>2017</option> </select>"+
+                    "<select id='month"+num+"'style='font-size:14pt;background:#080808; color:white'> <option >Month</option><option value='0'>1</option> <option value='1'>2</option> <option value='2'>3</option> <option value='3'>4</option> <option value='4'>5</option> <option value='5'>6</option> <option value='6'>7</option> <option value='7'>8</option> <option value='8'>9</option> <option value='9'>10</option> <option value='10'>11</option> <option value='11'>12</option> </select>"+
+                    "<select id='day"+num+"'style='font-size:14pt;background:#080808; color:white'> <option >Day</option><option value='0'>1</option> <option value='1'>2</option> <option value='2'>3</option> <option value='3'>4</option> <option value='4'>5</option> <option value='5'>6</option> <option value='6'>7</option> <option value='7'>8</option> <option value='8'>9</option> <option value='9'>10</option> <option value='10'>11</option> <option value='11'>12</option> <option value='12'>13</option> <option value='13'>14</option> <option value='14'>15</option> <option value='15'>16</option> <option value='16'>17</option> <option value='17'>18</option> <option value='18'>19</option> <option value='19'>20</option> <option value='20'>21</option> <option value='21'>22</option> <option value='22'>23</option> <option value='23'>24</option> <option value='24'>25</option> <option value='25'>26</option> <option value='26'>27</option> <option value='27'>28</option> <option value='28'>29</option> <option value='29'>30</option> <option value='20'>31</option></select>"+
+                    "</div>";
+
+
+            $("#lines").append(htm);
+            id=num;
+            bind();
+        }
+
+
+
+        <!-- sendButton 구현-->
+        function sendbutton(){
+
+            $("#startN"+num).attr("disabled",true);
+            $("#startC"+num).attr("disabled",true);
+            $("#endN"+num).attr("disabled",true);
+            $("#endC"+num).attr("disabled",true);
+            $("#year"+num).attr("disabled",true);
+            $("#month"+num).attr("disabled",true);
+            $("#day"+num).attr("disabled",true);
+
+            if(sendCheck==0) {
+
+
+                var tmp = $("#startC" + num).val();
+                var tmp1 = $("#endC" + num).val();
+
+                for (var i = 0; i < 3; i++) {
+                    if (cityCH[a][i] == tmp) {
+                        b = i;
+
+                    }
+
+                }
+                for (var j = 0; j < 3; j++) {
+                    if (cityCH[c][j] == tmp1) {
+                        d = j;
+
+                    }
+                }
+
+
+                list.push(a);
+                list.push(b);
+                list.push(c);
+                list.push(d);
+                list.push(e);
+                list.push(f);
+                list.push(g);
+
+
+                num++;
+
+                sendCheck++;
+            }
+            checkCost();
+
+
+
+        }
+
+
+    </script>
+</head>
+
+
+
+
+<body>
+
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-fixed-top topnav" role="navigation">
+    <div class="container topnav">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand topnav" href="#about">Best EURail Ticket for you!</a>
+        </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#about">About</a>
+                </li>
+                <li>
+                    <a href="#services">Services</a>
+                </li>
+                <li>
+                    <a href="#contact">Contact</a>
+                </li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+
+
+<!-- Header -->
+<a name="about"></a>
+<div class="intro-header">
+    <div class="container">
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="intro-message">
+                    <h1>Eurail Adviser</h1>
+                    <h3>SoftEngineering</h3>
+                    <hr class="intro-divider">
+                    <!-- Main display Button-->
+                    <ul class="list-inline intro-social-buttons">
+                        <li>
+                            <a href="https://www.hanyang.ac.kr/" class="btn btn-default btn-lg"><i class="fa fa-twitter fa-fw"></i> <span class="network-name">Hanyang Uni.</span></a>
+                        </li>
+                        <li>
+                            <a href="https://portal.hanyang.ac.kr/" class="btn btn-default btn-lg"><i class="fa fa-github fa-fw"></i> <span class="network-name">Portal</span></a>
+                        </li>
+                        <li>
+                            <a href="https://google.com" class="btn btn-default btn-lg"><i class="fa fa-linkedin fa-fw"></i> <span class="network-name">Google</span></a>
+                        </li>
+
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div>
+
+            <!-- Input Travel Section Part-->
+            <div id ="lines">
+                <div>
+                    <!-- Src_nation select box-->
+                    <select id='startN0'  style='font-size:14pt;background:#080808; color:white' >
+                        <option >Src Nation</option>
+                        <option value="0">Spain</option>
+                        <option value="1">France</option>
+                        <option value="2">Italy</option>
+                        <option value="3">Germany</option>
+                        <option value="4">Switzerland</option>
+                        <option value="5">Austria</option>
+                    </select>
+
+                    <!-- Src_city select box-->
+                    <select id="startC0" style='font-size:14pt;background:#080808; color:white'></select>
+                    <span>&nbsp;&nbsp;</span>
+
+                    <!-- Dest_nation select box-->
+                    <select id="endN0" style='font-size:14pt;background:#080808; color:white'>
+                        <option >Dest Nation</option>
+                        <option value="0">Spain</option>
+                        <option value="1">France</option>
+                        <option value="2">Italy</option>
+                        <option value="3">Germany</option>
+                        <option value="4">Switzerland</option>
+                        <option value="5">Austria</option>
+                    </select>
+
+                    <!-- Dest_city select box-->
+                    <select id="endC0" style='font-size:14pt;background:#080808;color:white'></select>
+                    <span>&nbsp;&nbsp;</span>
+
+                    <!-- year select box-->
+                    <select id="year0" style='font-size:14pt;background:#080808; color:white'>
+                        <option >Year</option>
+                        <option value="0">2016</option>
+                        <option value="1">2017</option>
+                    </select>
+
+                    <!-- month select box-->
+                    <select id="month0" style='font-size:14pt;background:#080808; color:white'>
+                        <option >Month</option>
+                        <option value="0">1</option>
+                        <option value="1">2</option>
+                        <option value="2">3</option>
+                        <option value="3">4</option>
+                        <option value="4">5</option>
+                        <option value="5">6</option>
+                        <option value="6">7</option>
+                        <option value="7">8</option>
+                        <option value="8">9</option>
+                        <option value="9">10</option>
+                        <option value="10">11</option>
+                        <option value="11">12</option>
+                    </select>
+
+                    <!-- day select box-->
+                    <select id="day0" style='font-size:14pt;background:#080808; color:white'>
+                        <option >Day</option>
+                        <option value="0">1</option>
+                        <option value="1">2</option>
+                        <option value="2">3</option>
+                        <option value="3">4</option>
+                        <option value="4">5</option>
+                        <option value="5">6</option>
+                        <option value="6">7</option>
+                        <option value="7">8</option>
+                        <option value="8">9</option>
+                        <option value="9">10</option>
+                        <option value="10">11</option>
+                        <option value="11">12</option>
+                        <option value="12">13</option>
+                        <option value="13">14</option>
+                        <option value="14">15</option>
+                        <option value="15">16</option>
+                        <option value="16">17</option>
+                        <option value="17">18</option>
+                        <option value="18">19</option>
+                        <option value="19">20</option>
+                        <option value="20">21</option>
+                        <option value="21">22</option>
+                        <option value="22">23</option>
+                        <option value="23">24</option>
+                        <option value="24">25</option>
+                        <option value="25">26</option>
+                        <option value="26">27</option>
+                        <option value="27">28</option>
+                        <option value="28">29</option>
+                        <option value="29">30</option>
+                        <option value="20">31</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <!-- Add Travel Section Button-->
+            <button type="button" id="plus" onclick="addButton()"style='font-size:10pt;background:#080808;color:red;margin-top: 10px' > PLUS </button>
+            <span>&nbsp;&nbsp;</span>
+
+            <!--Finish Input Travel Section Button-->
+            <button type="button" id="pracc" onclick="sendbutton()" style='font-size:10pt;background:#080808;color:red'> Finish </button>
+            <span>&nbsp;&nbsp;</span>
+
+
+
+            <!-- Input Cost of each travel section : Modal part-->
+            <div class="modal fade" id="layerpop" >
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <!-- header -->
+                        <div class="modal-header">
+                            <!-- (x) button -->
+                            <button type="button" class="close" data-dismiss="modal" style='color: black'>×</button>
+                            <!-- header title -->
+                            <h4 class="modal-title" style='color:mediumseagreen'> EURail Ticket </h4>
+
+                        </div>
+
+                        <!-- body -->
+                        <div id="body"></div>
+                        <div id="ticketch"></div>
+
+                        <div>
+
+                        </div>
+                        <!-- Footer -->
+                        <div class="modal-footer">
+                            <button type="button"class="btn btn-default" data-dismiss="modal" style='color: black'>Close</button>
+                        </div>
+
+                    </div>
+                </div>
+
+
+            </div>
+
+
+        </div>
+    </div>
+</div>
+<!-- Page Content -->
+
+<a  name="services"></a>
+<div class="content-section-a">
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-5 col-sm-6">
+                <hr class="section-heading-spacer">
+                <div class="clearfix"></div>
+                <h2 class="section-heading"><div style="color:red">유럽 여행?</div></h2>
+                <p class="lead">해마다 인천공항에서 출국하는 해외 여행객은 증가하는 추세이며, 유로화 가격이 떨어지고 유럽 여행에 대한정보도 점점 쉽게 얻을 수 있게 되어 유럽 여행객도 점점 증가하는 추세이다. 다음은 연도별로 인천공항에서 유럽으로 출국한 이용객의 합계를 나타내는 통계자료이다.</p>
+            </div>
+            <div class="col-lg-5 col-lg-offset-2 col-sm-6">
+                <img class="img-responsive" src="/static/img/aaa.PNG" alt="">
+            </div>
+        </div>
+
+    </div>
+    <!-- /.container -->
+
+</div>
+<!-- /.content-section-a -->
+
+<div class="content-section-b">
+
+    <div class="container">
+
+        <div class="row">
+            <div class="col-lg-5 col-lg-offset-1 col-sm-push-6  col-sm-6">
+                <hr class="section-heading-spacer">
+                <div class="clearfix"></div>
+                <h2 class="section-heading"><div style="color:red">구매 방법 ?</div> 유레일 패스 vs 구간권</h2>
+                <p class="lead">여행자들이 기차표를 구입하는 방법에는“유레일패스를 구입하는 것”과 “각 구간별로 표를 따로 예매하는 것”, 두 가지가 있다. 유레일패스와 구간권 예약의 경제성을 비교하기 위해서는 여행을 계획하는 각 국가의 철도청 홈페이지에서 모든 구간의 구간권 가격을 조사해야 하고, 원하는 구간에 사용 가능한 유레일패스의모든 종류와 조합을 비교해 보아야 한다. 우리는 각 구간 가격 정보와 유레일패스의 가격을 비교하여 어떻게예약을 하는 것이 가장 경제적인 방법인지 제시한다.</p>
+            </div>
+            <div class="col-lg-5 col-sm-pull-6  col-sm-6">
+                <img class="img-responsive" src="/static/img/EUrail.png" alt="">
+            </div>
+        </div>
+
+    </div>
+    <!-- /.container -->
+
+</div>
+<!-- /.content-section-b -->
+
+<div class="content-section-a">
+
+    <div class="container">
+
+        <div class="row">
+            <div class="col-lg-5 col-sm-6">
+                <hr class="section-heading-spacer">
+                <div class="clearfix"></div>
+                <h2 class="section-heading"><div style="color: red">Competitor ?</div>-StubbyPlanner-</h2>
+                <p class="lead">현재 자유여행 계획을 도와주는 서비스 중 제일 이용객 수가 많은 것은 <a target="_blank" href="http://stubbyplanner.com">스투비플래너</a> 이다.다른 여행객의 플래너 정보를 기반으로 여행 루트와 체류 일자를 추천해주고 자신만의 플래너를 만들 수 있게 도와주는 서비스이다. 그러나 이 서비스는 여행 구간에 대한 여러 종류의 이동수단 (기차, 저가항공, 버스 등) 간의 가격과 소요시간 비교를 도와주는데 그쳐, 기차표를 효율적으로 예매할 수있는 방법은 제공하지 않는다. 이외에도 본 솔루션과 비슷한 기능을 제공하는 서비스는 국내에 존재하지 않는것으로 조사되었다.</p>
+            </div>
+            <div class="col-lg-5 col-lg-offset-2 col-sm-6">
+                <img class="img-responsive" src="/static/img/nation.png" alt="">
+            </div>
+        </div>
+
+    </div>
+    <!-- /.container -->
+
+</div>
+<!-- /.content-section-a -->
+
+<a  name="contact"></a>
+<div class="banner">
+
+    <div class="container">
+
+        <div class="row">
+            <div class="col-lg-6">
+                <h2>Best way for Eurail</h2>
+            </div>
+            <div class="col-lg-6">
+                <ul class="list-inline banner-social-buttons">
+                    <li>
+                        <a href="https://www.hanyang.ac.kr/" class="btn btn-default btn-lg"><i class="fa fa-twitter fa-fw"></i> <span class="network-name">Hanyang Uni.</span></a>
+                    </li>
+                    <li>
+                        <a href="https://portal.hanyang.ac.kr/" class="btn btn-default btn-lg"><i class="fa fa-github fa-fw"></i> <span class="network-name">Portal</span></a>
+                    </li>
+                    <li>
+                        <a href="https://google.com" class="btn btn-default btn-lg"><i class="fa fa-linkedin fa-fw"></i> <span class="network-name">Google</span></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+    <!-- /.container -->
+
+</div>
+<!-- /.banner -->
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <ul class="list-inline">
+                    <li>
+                        <a href="#">Home</a>
+                    </li>
+                    <li class="footer-menu-divider">&sdot;</li>
+                    <li>
+                        <a href="#about">About</a>
+                    </li>
+                    <li class="footer-menu-divider">&sdot;</li>
+                    <li>
+                        <a href="#services">Services</a>
+                    </li>
+                    <li class="footer-menu-divider">&sdot;</li>
+                    <li>
+                        <a href="#contact">Contact</a>
+                    </li>
+                </ul>
+                <p class="copyright text-muted small">Copyright &copy; Hanyang University_ Computer Science Engineering_ (이유찬, 이종민, 송지수) 2016. All Rights Reserved  <span>&nbsp;&nbsp;</span><span>&nbsp;&nbsp;</span>   </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+
+
+<!-- jQuery -->
+<script src="/static/js/jquery.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/static/js/bootstrap.min.js"></script>
+
+
+</body>
+
+</html>
